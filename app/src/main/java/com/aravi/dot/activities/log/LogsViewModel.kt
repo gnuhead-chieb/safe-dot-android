@@ -14,44 +14,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.aravi.dot.activities.log
 
-package com.aravi.dot.activities.log;
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import com.aravi.dot.activities.log.database.LogsRepository
+import com.aravi.dot.model.Logs
 
 /**
  * Created by Aravind Chowdary on
- **/
+ */
+class LogsViewModel(application: Application?) : AndroidViewModel(
+    application!!
+) {
+    private val logsRepository: LogsRepository
+    private val mLogsList: LiveData<List<Logs?>?>
+    fun getmLogsList(): LiveData<List<Logs?>?> {
+        return mLogsList
+    }
 
-import android.app.Application;
-
-import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
-
-import com.aravi.dot.activities.log.database.LogsRepository;
-import com.aravi.dot.model.Logs;
-
-import java.util.List;
-
-public class LogsViewModel extends AndroidViewModel {
-    private LogsRepository logsRepository;
-    private final LiveData<List<Logs>> mLogsList;
+    fun clearLogs() {
+        logsRepository.clearLogs()
+    }
 
     /**
      * @param application
      */
-    public LogsViewModel(Application application) {
-        super(application);
-        logsRepository = new LogsRepository(application);
-        mLogsList = logsRepository.getLogs();
+    init {
+        logsRepository = LogsRepository(application)
+        mLogsList = logsRepository.logs
     }
-
-    public LiveData<List<Logs>> getmLogsList() {
-        return mLogsList;
-    }
-
-    public void clearLogs() {
-        logsRepository.clearLogs();
-    }
-
-
 }
-

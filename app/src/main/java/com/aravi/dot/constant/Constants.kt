@@ -14,16 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.aravi.dot.constant
 
-package com.aravi.dot.helper;
+import com.aravi.dot.BuildConfig
 
-import android.app.Application;
-
-public class ApplicationHelper {
-    private static final String TAG = ApplicationHelper.class.getSimpleName();
-    private static final String REMAINDER_CHANNEL = "REMINDER_CHANNEL";
-
-    public static void initApplicationHelper(Application application) {
-    }
-
+object Constants {
+    const val SHARED_PREFERENCE_NAME = "com.aravi.dot.PREFERENCES_CUSTOMISATIONS"
+    const val DEFAULT_NOTIFICATION_CHANNEL = "SAFE_DOT_NOTIFICATION"
+    const val SERVICE_NOTIFICATION_CHANNEL = "SAFE_DOT_SERVICE_NOTIFICATION"
+    const val NOTIFICATION_ID = 256
+    val isDebug: Boolean
+        get() = BuildConfig.DEBUG
 }

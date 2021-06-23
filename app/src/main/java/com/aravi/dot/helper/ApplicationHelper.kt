@@ -14,28 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.aravi.dot.helper
 
-package com.aravi.dot.activities.log.database;
+import android.app.Application
 
-import androidx.lifecycle.LiveData;
-import androidx.room.Dao;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
+object ApplicationHelper {
+    private val TAG = ApplicationHelper::class.java.simpleName
+    private const val REMAINDER_CHANNEL = "REMINDER_CHANNEL"
 
-import com.aravi.dot.model.Logs;
-
-import java.util.List;
-
-@Dao
-public interface LogsDao {
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void insert(Logs logs);
-
-    @Query("DELETE FROM logs_database")
-    void clearAllLogs();
-
-    @Query("SELECT * FROM logs_database ORDER BY timestamp DESC")
-    LiveData<List<Logs>> getOrderedLogs();
+    @JvmStatic
+    fun initApplicationHelper(application: Application?) {}
 }

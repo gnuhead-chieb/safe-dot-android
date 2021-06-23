@@ -14,19 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.aravi.dot.activities.log.database
 
-package com.aravi.dot.constant;
+import androidx.lifecycle.LiveData
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import com.aravi.dot.model.Logs
 
-import com.aravi.dot.BuildConfig;
+@Dao
+interface LogsDao {
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insert(logs: Logs?)
 
-public class Constants {
-    public static final String SHARED_PREFERENCE_NAME = "com.aravi.dot.PREFERENCES_CUSTOMISATIONS";
-    public static final String DEFAULT_NOTIFICATION_CHANNEL = "SAFE_DOT_NOTIFICATION";
-    public static final String SERVICE_NOTIFICATION_CHANNEL = "SAFE_DOT_SERVICE_NOTIFICATION";
-    public static final int NOTIFICATION_ID = 256;
+    @Query("DELETE FROM logs_database")
+    fun clearAllLogs()
 
-    public static boolean isDebug() {
-        return BuildConfig.DEBUG;
-    }
-
+    @get:Query("SELECT * FROM logs_database ORDER BY timestamp DESC")
+    val orderedLogs: LiveData<List<Logs?>?>?
 }

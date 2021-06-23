@@ -14,64 +14,46 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.aravi.dot.activities.log.database
 
-package com.aravi.dot.activities.log.database;
+import android.app.Application
+import androidx.lifecycle.LiveData
+import com.aravi.dot.model.Logs
 
 /**
  * Created by Aravind Chowdary on
- **/
-
-import android.app.Application;
-
-import androidx.lifecycle.LiveData;
-
-import com.aravi.dot.activities.log.database.LogsDao;
-import com.aravi.dot.activities.log.database.LogsRoomDatabase;
-import com.aravi.dot.model.Logs;
-
-import java.util.List;
-
-public class LogsRepository {
-
-    private LogsDao logsDao;
-    private LiveData<List<Logs>> logLiveData;
-
-    /**
-     * @param application
-     */
-    public LogsRepository(Application application) {
-        LogsRoomDatabase db = LogsRoomDatabase.getDatabase(application);
-        logsDao = db.logsDao();
-        logLiveData = logsDao.getOrderedLogs();
-    }
-
+ */
+class LogsRepository(application: Application?) {
+    private lateinit var logsDao: LogsDao // Room executes all queries on a separate thread.
+    // Observed LiveData will notify the observer when the data has changed.
     /**
      * @return
      */
-    public LiveData<List<Logs>> getLogs() {
-        // Room executes all queries on a separate thread.
-        // Observed LiveData will notify the observer when the data has changed.
-        return logLiveData;
-    }
-
+    lateinit var logs: LiveData<List<Logs?>?>
 
     /**
      * @param logs
      */
-    public void insertLog(Logs logs) {
+    fun insertLog(logs: Logs?) {
         // You must call this on a non-UI thread or your app will throw an exception. Room ensures
         // that you're not doing any long running operations on the main thread, blocking the UI.
-        LogsRoomDatabase.databaseWriteExecutor.execute(() -> {
-            logsDao.insert(logs);
-        });
+        LogsRoomDatabase.databaseWriteExecutor.execute { logsDao.insert(logs) }
     }
 
     // You must call this on a non-UI thread or your app will throw an exception. Room ensures
     // that you're not doing any long running operations on the main thread, blocking the UI.
-    public void clearLogs() {
-        LogsRoomDatabase.databaseWriteExecutor.execute(() -> {
-            logsDao.clearAllLogs();
-        });
+    fun clearLogs() {
+        LogsRoomDatabase.databaseWriteExecutor.execute { logsDao.clearAllLogs() }
+    }
+
+    /**
+     * @param application
+     */
+    init {
+        val db = application?.let { LogsRoomDatabase.getDatabase(it) }
+        if (db != null) {
+            logsDao = db.logsDao()!!
+            logs = logsDao.orderedLogs!!
+        }
     }
 }
-
